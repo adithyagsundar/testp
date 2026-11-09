@@ -1,14 +1,16 @@
 ---
 import { site } from '../data/site';
+const [, degree, year] = site.school.split(' · ');
 ---
 <section id="education" class="block page" aria-labelledby="edu-h">
   <h2 id="edu-h" class="block__h" data-split>Education</h2>
   <div class="education" data-reveal>
     <span class="education__mark" aria-hidden="true">UCLA</span>
-    <div>
+    <div class="education__details">
       <h3>University of California, Los Angeles</h3>
-      <p>{site.school}</p>
+      <p>{degree}</p>
     </div>
+    <span class="education__year meta tabular">Class of {year}</span>
   </div>
 </section>
 
@@ -21,6 +23,8 @@ import { site } from '../data/site';
     border-block: 1px solid var(--rule);
   }
   .education__mark {
+    position: relative;
+    overflow: hidden;
     flex: none;
     padding: 0.65em 0.8em;
     border-bottom: 3px solid #ffd100;
@@ -31,7 +35,21 @@ import { site } from '../data/site';
     font-style: italic;
     letter-spacing: -0.03em;
   }
+  .education__mark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 25%, rgb(255 255 255 / 0.3) 50%, transparent 75%);
+    transform: translateX(-120%);
+    pointer-events: none;
+  }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .education:hover .education__mark::before { animation: sheen 700ms var(--ease-out); }
+  }
+  @keyframes sheen { to { transform: translateX(120%); } }
   .education p { margin-top: var(--s-2); color: var(--ink-2); }
+  .education__details { flex: 1; min-width: 0; }
+  .education__year { white-space: nowrap; }
   @media (max-width: 640px) {
     .education { flex-direction: column; align-items: flex-start; }
   }

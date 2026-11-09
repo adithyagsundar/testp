@@ -11,7 +11,7 @@ const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; 
       <li class="res__item" data-reveal data-scroll>
         <div>
           <h3 class="res__title">
-            {p.data.links.paper ? <a href={p.data.links.paper}>{p.data.title}<Icon name="arrow-up-right" /></a> : p.data.title}
+            {p.data.links.paper ? <a href={p.data.links.paper}><span class="hover-ink">{p.data.title}</span><Icon name="arrow-up-right" /></a> : p.data.title}
           </h3>
           <p class="res__meta">
             <span class="res__venue">{p.data.venue}</span>
@@ -33,8 +33,18 @@ const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; 
   }
   .res__item:last-child { border-bottom: 1px solid var(--rule); }
   .res__title { font-size: var(--step-1); }
-  .res__title a { color: var(--ink); display: inline-flex; gap: 0.25em; align-items: baseline; }
-  .res__title :global(svg) { width: 0.8em; height: 0.8em; }
+  .res__title a { color: var(--ink); text-decoration: none; }
+  .res__title :global(svg) {
+    width: 0.8em; height: 0.8em; margin-left: 0.3em; color: var(--ink-3);
+    transition: translate 320ms var(--ease-out), color 200ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .res__title a:hover :global(svg) { translate: 3px -3px; color: var(--ink); }
+  }
+  .res__title a:focus-visible :global(svg) { translate: 3px -3px; color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) {
+    .res__title :global(svg) { transition: none; translate: none !important; }
+  }
   .res__meta { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: baseline; margin-top: var(--s-2); }
   .res__venue { font-weight: 560; }
   .res__status { color: var(--ink-3); }

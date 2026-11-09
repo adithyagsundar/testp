@@ -323,32 +323,15 @@ export function phraseLines(root: HTMLElement, opts: { animate: boolean; delay?:
         path.setAttribute('d', `${open} H${x2}${close}`);
         path.setAttribute('pathLength', '1');
         g.append(path);
-        if (li === 0) {
-          // The label sits in a notch cut into the bracket line, so it adds no height
-          const notch = document.createElementNS(SVG, 'rect');
-          notch.setAttribute('x', String(x1 + 6));
-          notch.setAttribute('y', String(y - 6));
-          notch.setAttribute('height', '12');
-          notch.setAttribute('rx', '2');
-          const t = document.createElementNS(SVG, 'text');
-          t.textContent = pc.dataset.cat ?? '';
-          t.setAttribute('x', String(x1 + 10));
-          t.setAttribute('y', String(y + 3.5));
-          g.append(notch, t);
-        }
+        const accent = path.cloneNode() as SVGPathElement;
+        accent.classList.add('parse__accent');
+        g.append(accent);
       });
       svg.append(g);
-      g.querySelectorAll('text').forEach((t) => {
-        const w = (t as SVGTextElement).getComputedTextLength();
-        (t.previousSibling as SVGRectElement).setAttribute('width', String(w + 8));
-      });
       if (animateIn) {
         const d = (opts.delay ?? 0) + i * 160;
-        g.querySelectorAll('path').forEach((p, k) =>
+        g.querySelectorAll('path:not(.parse__accent)').forEach((p, k) =>
           p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 900, delay: d + k * 120, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'both' }),
-        );
-        g.querySelectorAll('text, rect').forEach((t) =>
-          t.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: d + 300, easing: 'ease-out', fill: 'both' }),
         );
       }
     });
@@ -382,11 +365,20 @@ export function phraseLines(root: HTMLElement, opts: { animate: boolean; delay?:
 /* ── 6c. A soft highlighter glow follows the pointer across a row ───────── */
 export function rowGlow(rows: NodeListOf<HTMLElement>) {
   rows.forEach((row) => {
+    const opts = { dampingRatio: 1, response: 0.22 };
+    const x = new Spring(0, (v) => row.style.setProperty('--mx', `${v}px`), opts);
+    const y = new Spring(0, (v) => row.style.setProperty('--my', `${v}px`), opts);
+    row.addEventListener('pointerenter', (e) => {
+      const r = row.getBoundingClientRect();
+      x.set(e.clientX - r.left);
+      y.set(e.clientY - r.top);
+    });
     row.addEventListener('pointermove', (e) => {
       const r = row.getBoundingClientRect();
-      row.style.setProperty('--mx', `${e.clientX - r.left}px`);
-      row.style.setProperty('--my', `${e.clientY - r.top}px`);
+      x.to(e.clientX - r.left);
+      y.to(e.clientY - r.top);
     });
+    row.addEventListener('pointerleave', () => { x.stop(); y.stop(); });
   });
 }
 

@@ -10,5 +10,5 @@ points:
   - Designed Proximal Surrogate Generation, a reusable framework for stress-testing LLM unlearning systems.
   - Built scalable data and evaluation pipelines across Llama, Qwen, and Zephyr.
   - Ran distributed experiments on HPC benchmarking NPO and RMU across 3 datasets and 7 metrics.
-  - Turned the findings into reproducible artifacts and contributed to a published paper.
+  - Developed reproducible software artifacts supporting research on unlearning evaluation.
 ---

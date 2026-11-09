@@ -67,8 +67,9 @@ const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; 
     margin-top: var(--s-3);
     font-size: clamp(2.4rem, 1.4rem + 4.4vw, 5rem);
     letter-spacing: -0.035em;
-    line-height: 0.98;
+    line-height: 1.08;
     max-width: 16ch;
+    overflow-wrap: anywhere;
   }
   .case__lede { margin-top: var(--s-7); max-width: 40ch; font: 450 var(--step-2) / 1.35 var(--font-display); letter-spacing: -0.015em; }
   .case__facts {
@@ -86,6 +87,9 @@ const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; 
   .case__body :global(ul) { padding-left: 1.2rem; }
   .case__body :global(li + li) { margin-top: var(--s-3); }
   .case__body :global(p) { color: var(--ink-2); }
+  .case__body :global(p + p),
+  .case__body :global(p + ul),
+  .case__body :global(ul + p) { margin-top: var(--s-4); }
   .case__next {
     display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-4);
     margin-top: var(--s-9); padding-top: var(--s-5); border-top: 1px solid var(--rule);
@@ -97,4 +101,8 @@ const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; 
   }
   .case__next :global(svg) { width: 0.8em; height: 0.8em; transition: transform 220ms var(--ease-out); }
   @media (hover: hover) and (pointer: fine) { .case__next a:hover :global(svg) { transform: translateX(4px); } }
+  @media (max-width: 640px) {
+    .case__next { flex-direction: column; gap: var(--s-3); }
+    .case__facts { grid-template-columns: minmax(0, 1fr); }
+  }
 </style>

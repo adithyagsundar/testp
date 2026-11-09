@@ -1,8 +1,7 @@
 /**
  * A minimal custom cursor (fine pointers only).
  * - A small dot tracks the pointer 1:1.
- * - A ring trails it on a critically damped spring (apple-design: interruptible,
- *   X/Y decomposed, starts from its live position).
+ * - The ring stays centered on the dot; morphs use interruptible springs.
  * - Over buttons and nav links the ring morphs to the control's shape, like the
  *   iPadOS pointer, and leans slightly toward the real pointer.
  * - Over a work row it becomes a small "Open" pill; over a chip, "Drag".
@@ -31,7 +30,8 @@ export function initCursor(reduced: boolean) {
   let radius = '999px';
 
   const paintRing = () => {
-    ring.style.transform = `translate3d(${(rx - rw / 2).toFixed(2)}px, ${(ry - rh / 2).toFixed(2)}px, 0)`;
+    // Separate position from scale so a click never scales screen coordinates.
+    ring.style.translate = `${(rx - rw / 2).toFixed(2)}px ${(ry - rh / 2).toFixed(2)}px`;
     ring.style.width = `${rw.toFixed(2)}px`;
     ring.style.height = `${rh.toFixed(2)}px`;
   };
@@ -46,6 +46,7 @@ export function initCursor(reduced: boolean) {
   const setMode = (m: Mode, text = '') => {
     mode = m;
     el.dataset.mode = m;
+    el.removeAttribute('data-link');
     label.textContent = text;
     if (m === 'idle') { go(sw, SIZE); go(sh, SIZE); ring.style.borderRadius = '999px'; }
     if (m === 'label') {
@@ -71,13 +72,16 @@ export function initCursor(reduced: boolean) {
 
   const SNAP = '.btn, .nav__links a, .nav__theme, .nav__brand, .exp__toggle, .case__back, .case__next a, .res__title a, .res__role a, .pipe__pause';
   const LINK = 'a, button, [role="button"], summary, label';
+  setMode('idle');
 
-  addEventListener('pointermove', (e) => {
+  const updateCursor = (e: PointerEvent) => {
     if (e.pointerType !== 'mouse') return;
     px = e.clientX;
     py = e.clientY;
+    const entering = !el.hasAttribute('data-visible');
+    dot.style.translate = `${px}px ${py}px`;
+    if (entering) { sx.set(px); sy.set(py); }
     el.dataset.visible = '';
-    dot.style.transform = `translate3d(${px}px, ${py}px, 0)`;
 
     const t = e.target as HTMLElement;
     const snap = t.closest<HTMLElement>(SNAP);
@@ -85,6 +89,7 @@ export function initCursor(reduced: boolean) {
     const drag = t.closest<HTMLElement>('[data-drag]');
 
     if (snap) {
+      el.removeAttribute('data-link');
       if (mode !== 'snap' || snapTarget !== snap) { mode = 'snap'; el.dataset.mode = 'snap'; label.textContent = ''; snapTarget = snap; }
       snapTo(snap, e);
       return;
@@ -94,14 +99,32 @@ export function initCursor(reduced: boolean) {
     else if (drag) { if (mode !== 'label' || label.textContent !== 'Drag') setMode('label', 'Drag'); }
     else if (mode !== 'idle') setMode('idle');
     el.toggleAttribute('data-link', !!t.closest(LINK) && mode === 'idle');
-    go(sx, px);
-    go(sy, py);
-  }, { passive: true });
+    sx.set(px);
+    sy.set(py);
+  };
+  addEventListener('pointermove', updateCursor, { passive: true });
 
-  addEventListener('pointerdown', () => el.setAttribute('data-down', ''));
-  addEventListener('pointerup', () => el.removeAttribute('data-down'));
-  document.documentElement.addEventListener('pointerleave', () => el.removeAttribute('data-visible'));
-  addEventListener('blur', () => el.removeAttribute('data-visible'));
-  // Scrolling moves content under a still pointer: drop stale snap states
-  addEventListener('scroll', () => { if (mode === 'snap') { setMode('idle'); go(sx, px); go(sy, py); } }, { passive: true });
+  addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    updateCursor(e);
+    el.setAttribute('data-down', '');
+  });
+  addEventListener('pointerup', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    el.removeAttribute('data-down');
+    updateCursor(e);
+  });
+  const reset = () => {
+    el.removeAttribute('data-down');
+    snapTarget = null;
+    setMode('idle');
+    sx.set(px); sy.set(py);
+    sw.set(SIZE); sh.set(SIZE);
+  };
+  const hide = () => { reset(); el.removeAttribute('data-visible'); };
+  addEventListener('pointercancel', hide);
+  document.documentElement.addEventListener('pointerleave', hide);
+  addEventListener('blur', hide);
+  // Content may move under a stationary pointer; clear the old control shape.
+  addEventListener('scroll', reset, { passive: true });
 }

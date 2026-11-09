@@ -10,12 +10,15 @@ gloss:
 translation: Probes that read a language model's uncertainty directly from its internal representations.
 stack: [Python, PyTorch, Transformers]
 languages: []
-links: {}
-todo: [Add repo link, Add paper link]
+links:
+  paper: https://openreview.net/pdf?id=UfvxT346jK
+todo: [Add repo link, Verify exact paper title and publication details from an accessible PDF]
 ---
 
 ## What I built
 
-- Linear interpretability probes that quantify semantic uncertainty across transformer output distributions, to study how internal representations relate to uncertainty.
-- Evaluation pipelines that combine semantic entropy metrics, sentence embedding models, and generation analysis to benchmark uncertainty and reasoning consistency across model families.
-- Published at BlackboxNLP, EMNLP 2025.
+Linear probes that estimate semantic uncertainty from a language model’s internal representations. The goal is to understand how hidden states relate to uncertainty about the meaning of an answer.
+
+Built evaluation pipelines combining semantic entropy, sentence embeddings, and generation analysis to compare uncertainty and reasoning consistency across model families.
+
+[Read the paper on OpenReview](https://openreview.net/pdf?id=UfvxT346jK).

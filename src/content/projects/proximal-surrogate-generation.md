@@ -8,16 +8,24 @@ gloss:
   - { w: Eval pipeline, g: embed-filter-infer-score }
   - { w: HPC workflows, g: distribute-bench }
   - { w: Models, g: llama·qwen·zephyr }
-translation: A reusable framework that stress-tests whether LLM unlearning actually holds up.
+translation: Tests whether a model has forgotten knowledge—or just the exact text used to evaluate it.
 stack: [Python, HPC, Embeddings, Evaluation pipelines]
 languages: []
-links: {}
-todo: [Add repo link, Add paper link]
+links:
+  paper: https://arxiv.org/pdf/2512.19025
+todo: [Add repo link, Confirm contribution attribution and internship dates against the December 2025 preprint]
 ---
 
-## What I built
+## The idea
 
-- A reusable framework that stress-tests LLM unlearning systems with semantically related surrogate datasets, to judge how robust and reliable unlearning evaluation really is.
-- Scalable data and evaluation pipelines covering dataset generation, embedding optimization, likelihood filtering, model inference, and automated metric computation, for comparative experiments across Llama, Qwen, and Zephyr.
-- Distributed experiment workflows on HPC infrastructure that benchmarked NPO and RMU across 3 datasets and 7 metrics and exposed systematic robustness gaps.
-- Reproducible software artifacts, plus a contribution to a published research paper.
+A model can stop reproducing training text and still retain related knowledge. Proximal Surrogate Generation creates semantically related but distinct test data to expose that gap.
+
+## My contribution
+
+Built data-generation and evaluation pipelines spanning embeddings, likelihood filtering, model inference, and automated scoring, with distributed experiments on HPC infrastructure.
+
+## What the evaluation showed
+
+Across three model families, three datasets, and seven metrics, standard evaluations often overstated forgetting. Testing related content revealed knowledge that the original tests missed.
+
+The work is described in [The Erasure Illusion: Stress-Testing the Generalization of LLM Forgetting Evaluation](https://arxiv.org/abs/2512.19025), an arXiv preprint released in December 2025.

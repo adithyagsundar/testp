@@ -1,5 +1,5 @@
 ---
-title: Multilingual chatbot platform
+title: Yekola — multilingual chatbot
 context: Yekola · Software Engineer Intern
 period: Jan – Oct 2025
 order: 1
@@ -12,13 +12,17 @@ gloss:
 translation: A chatbot platform that holds conversations in Lingala, Amharic, and Swahili, three low-resource languages.
 stack: [Python, LLaMA, Retrieval, Data pipelines]
 languages: [Lingala, Amharic, Swahili]
-links: {}
-todo: [Add a demo link or screenshots if one can be shared]
+links:
+  demo: https://yekola.app/
+todo: [Confirm the symposium video is publicly viewable]
 ---
 
 ## What I built
 
-- Backend services, multilingual data-processing workflows, and retrieval-based response systems that support conversations across three low-resource languages.
-- Reusable pipelines to ingest, clean, transform, and validate multilingual datasets.
-- LLaMA-based models integrated into the application stack, with prompting, model evaluation, and user-feedback workflows supporting iterative releases.
-- A user-feedback system that brought responses from 200+ native speakers into the release cycle, so every release was tested by speakers of the supported languages.
+Backend services and data pipelines for a chatbot supporting Lingala, Amharic, and Swahili. My work connected multilingual data processing, retrieval, and LLaMA-based models to the application.
+
+- Built reusable workflows to ingest, clean, and validate multilingual datasets.
+- Integrated retrieval, prompting, and model evaluation into iterative releases.
+- Brought feedback from 200+ native speakers into the development cycle.
+
+[Visit Yekola](https://yekola.app/) · [Watch the 2025 OpenNLP Symposium recording](https://drive.google.com/file/d/1_b0UAq9FOPxSrRS59TCa-5p3zPwnqE20/view)

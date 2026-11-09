@@ -6,6 +6,7 @@ year: 2025
 order: 1
 role: Research and evaluation pipelines
 related: semantic-entropy-probes
-links: {}
-todo: [Replace the title with the paper's exact title, Add paper link]
+links:
+  paper: https://openreview.net/pdf?id=UfvxT346jK
+todo: [Verify exact paper title and venue from an accessible PDF; OpenReview blocked retrieval]
 ---

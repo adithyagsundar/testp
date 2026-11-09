@@ -5,7 +5,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
 const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; // run with PUBLIC_SHOW_TODO=true to see missing evidence
 ---
 <section id="work" class="block page" aria-labelledby="work-h">
-  <h2 id="work-h" class="block__h" data-split data-parse><span class="pc" data-cat="Adj">Selected</span> <span class="pc" data-cat="N">work</span></h2>
+  <h2 id="work-h" class="block__h" data-split data-parse><span class="pc">Selected</span> <span class="pc">work</span></h2>
 
   <ol class="work">
     {projects.map((p) => (
@@ -14,7 +14,7 @@ const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; 
         <div class="work__main">
           <h3 class="work__title">
             <a href={`/work/${p.id}/`} class="work__link" style={`view-transition-name: t-${p.id}`}>
-              <span>{p.data.title}</span>
+              <span class="hover-ink">{p.data.title}</span>
               <Icon name="arrow-up-right" />
             </a>
           </h3>
@@ -54,9 +54,7 @@ const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; 
   .work__main { display: grid; gap: var(--s-2); min-width: 0; }
   .work__title { font-size: var(--step-2); letter-spacing: -0.025em; }
   .work__link {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.3em;
+    display: inline;
     color: var(--ink);
     text-decoration: none;
   }
@@ -66,20 +64,17 @@ const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; 
   .work__link :global(svg) {
     width: 0.65em;
     height: 0.65em;
+    margin-left: 0.3em;
     color: var(--ink-3);
-    opacity: 0;
-    transform: translate(-4px, 4px);
-    transition: transform 420ms var(--ease-out), opacity 300ms ease, color 300ms ease;
-  }
-  .work__link span {
-    background: linear-gradient(var(--hl), var(--hl)) 0 88% / 0% 0.3em no-repeat;
-    transition: background-size 520ms var(--ease-out);
+    transition: translate 320ms var(--ease-out), color 200ms ease;
   }
   @media (hover: hover) and (pointer: fine) {
-    .work__item:hover .work__link span { background-size: 100% 0.3em; }
-    .work__item:hover .work__link :global(svg) { opacity: 1; transform: none; color: var(--ink); }
+    .work__item:hover .work__link :global(svg) { translate: 3px -3px; color: var(--ink); }
   }
-  @media (hover: none) { .work__link :global(svg) { opacity: 1; transform: none; } }
+  .work__link:focus-visible :global(svg) { translate: 3px -3px; color: var(--ink); }
+  @media (prefers-reduced-motion: reduce) {
+    .work__link :global(svg) { transition: none; translate: none !important; }
+  }
   .work__desc { color: var(--ink-2); max-width: 60ch; }
   .work__stack { color: var(--ink-3); font-size: var(--step--1); }
   .work__ctx { color: var(--ink-3); font-size: var(--step--1); text-align: right; line-height: 1.5; padding-top: 0.4rem; }

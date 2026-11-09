@@ -153,10 +153,11 @@ const base = home ? '' : '/';
     transform: scaleX(0);
   }
 
-  @media (max-width: 880px) {
+  @media (max-width: 960px) {
     .nav__links { display: none; }
   }
   @media (max-width: 400px) {
+    .nav__inner { gap: var(--s-2); }
     .nav__name { font-size: var(--step--1); }
   }
 </style>

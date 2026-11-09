@@ -27,12 +27,14 @@ import { lexicon } from '../data/site';
     background: var(--paper);
     font-weight: 520;
     font-size: var(--step--1);
-    transition: border-color 200ms ease, box-shadow 300ms ease, background-color 200ms ease;
+    transition: translate 320ms var(--ease-out), border-color 200ms ease, box-shadow 300ms ease, background-color 200ms ease;
   }
   @media (hover: hover) and (pointer: fine) {
     .chip { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
-    .chip:hover { border-color: var(--rule-strong); }
+    .chip:hover { border-color: var(--rule-strong); translate: 0 -3px; background: var(--paper-raised); }
+    .chip[data-grabbed] { translate: none; }
     .chip[data-grabbed] { cursor: grabbing; border-color: var(--ink); box-shadow: var(--shadow); background: var(--paper-raised); position: relative; z-index: 5; }
   }
   @media (max-width: 640px) { .lex__row { grid-template-columns: 1fr; gap: var(--s-2); } }
+  @media (prefers-reduced-motion: reduce) { .chip { transition: none; translate: none !important; } }
 </style>
