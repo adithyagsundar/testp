@@ -1,0 +1,53 @@
+---
+import '@fontsource-variable/bricolage-grotesque/opsz.css';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+
+interface Props { title?: string; description?: string; home?: boolean }
+const { title, description = site.description, home = false } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} · Software engineer`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f5f6f8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (() => {
+        const d = document.documentElement;
+        d.classList.add('js');
+        let t = null;
+        try { t = localStorage.getItem('theme'); } catch {}
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        d.dataset.theme = t;
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          d.classList.add('intro');
+          setTimeout(() => d.classList.remove('intro'), 2500); // never strand hidden content
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav home={home} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <div class="kbd-hint" role="status" aria-live="polite" hidden></div>
+    <script>
+      import '../scripts/site';
+    </script>
+  </body>
+</html>

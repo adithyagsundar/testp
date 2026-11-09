@@ -1,0 +1,15 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="foot">
+  <div class="page foot__inner">
+    <p class="meta">© {year} {site.name}</p>
+    <p class="meta"><a href={site.linkedin}>LinkedIn</a> · <a href={site.github}>GitHub</a></p>
+  </div>
+</footer>
+<style>
+  .foot { border-top: 1px solid var(--rule); padding-block: var(--s-6) var(--s-7); }
+  .foot__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3); }
+  .foot a { color: inherit; }
+</style>

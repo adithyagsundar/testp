@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from './Icon.astro';
+const papers = (await getCollection('research')).sort((a, b) => a.data.order - b.data.order);
+const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; // run with PUBLIC_SHOW_TODO=true to see missing evidence
+---
+<section id="research" class="block page" aria-labelledby="res-h">
+  <h2 id="res-h" class="block__h" data-split>Research</h2>
+  <ol class="res">
+    {papers.map((p) => (
+      <li class="res__item" data-reveal data-scroll>
+        <div>
+          <h3 class="res__title">
+            {p.data.links.paper ? <a href={p.data.links.paper}>{p.data.title}<Icon name="arrow-up-right" /></a> : p.data.title}
+          </h3>
+          <p class="res__meta">
+            <span class="res__venue">{p.data.venue}</span>
+            <span class="res__status">{p.data.status}{p.data.year && <> · {p.data.year}</>}</span>
+          </p>
+          <p class="res__role">{p.data.role}{p.data.related && <> · <a href={`/work/${p.data.related}/`}>See the build</a></>}</p>
+          {dev && p.data.todo.length > 0 && <p class="todo">TODO: {p.data.todo.join(' · ')}</p>}
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+<style>
+  .res { list-style: none; display: grid; }
+  .res__item {
+    display: grid;
+    padding-block: var(--s-5);
+    border-top: 1px solid var(--rule);
+  }
+  .res__item:last-child { border-bottom: 1px solid var(--rule); }
+  .res__title { font-size: var(--step-1); }
+  .res__title a { color: var(--ink); display: inline-flex; gap: 0.25em; align-items: baseline; }
+  .res__title :global(svg) { width: 0.8em; height: 0.8em; }
+  .res__meta { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); align-items: baseline; margin-top: var(--s-2); }
+  .res__venue { font-weight: 560; }
+  .res__status { color: var(--ink-3); }
+  .res__role { margin-top: var(--s-2); color: var(--ink-2); font-size: var(--step--1); }
+</style>

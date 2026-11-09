@@ -1,0 +1,100 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+  return projects.map((p, i) => ({
+    params: { slug: p.id },
+    props: { project: p, next: projects[(i + 1) % projects.length] },
+  }));
+}
+const { project, next } = Astro.props;
+const { Content } = await render(project);
+const d = project.data;
+const dev = import.meta.env.DEV && import.meta.env.PUBLIC_SHOW_TODO === 'true'; // run with PUBLIC_SHOW_TODO=true to see missing evidence
+---
+<Base title={d.title} description={d.translation}>
+  <article class="case page">
+    <a class="case__back" href="/#work"><Icon name="arrow-left" /> All work</a>
+    <header class="case__head">
+      <h1 class="case__title" data-split style={`view-transition-name: t-${project.id}`}>{d.title}</h1>
+      <p class="case__ctx" data-reveal>{d.context} · <span class="tabular">{d.period}</span></p>
+    </header>
+
+    <p class="case__lede" data-reveal>{d.translation}</p>
+
+    <dl class="case__facts" data-reveal>
+      {d.stack.length > 0 && <div><dt class="case__dt">Stack</dt><dd>{d.stack.join(' · ')}</dd></div>}
+      {d.languages.length > 0 && <div><dt class="case__dt">Languages</dt><dd>{d.languages.join(' · ')}</dd></div>}
+      <div>
+        <dt class="case__dt">Evidence</dt>
+        <dd class="case__links">
+          {d.links.repo && <a href={d.links.repo}><Icon name="github" /> Code</a>}
+          {d.links.demo && <a href={d.links.demo}><Icon name="arrow-up-right" /> Demo</a>}
+          {d.links.paper && <a href={d.links.paper}><Icon name="arrow-up-right" /> Paper</a>}
+          <a href={site.resume}><Icon name="download" /> Resume</a>
+        </dd>
+      </div>
+    </dl>
+    {dev && d.todo.length > 0 && <p class="todo">TODO: {d.todo.join(' · ')}</p>}
+
+    <div class="case__body" data-reveal>
+      <Content />
+    </div>
+
+    <nav class="case__next" aria-label="Next project" data-reveal>
+      <span class="meta">Next project</span>
+      <a href={`/work/${next.id}/`}>{next.data.title} <Icon name="arrow-right" /></a>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .case { padding-block: var(--s-6) var(--s-9); }
+  .case__back {
+    display: inline-flex; align-items: center; gap: 0.4em; min-height: 44px;
+    color: var(--ink-2); text-decoration: none; font-weight: 520;
+  }
+  .case__back :global(svg) { width: 1em; height: 1em; transition: transform 220ms var(--ease-out); }
+  @media (hover: hover) and (pointer: fine) { .case__back:hover :global(svg) { transform: translateX(-3px); } }
+  .case__head { margin-top: var(--s-6); }
+  .case__ctx { margin-top: var(--s-4); color: var(--ink-2); }
+  .case__dt { font-size: var(--step--1); color: var(--ink-3); }
+  .case__title {
+    margin-top: var(--s-3);
+    font-size: clamp(2.4rem, 1.4rem + 4.4vw, 5rem);
+    letter-spacing: -0.035em;
+    line-height: 0.98;
+    max-width: 16ch;
+  }
+  .case__lede { margin-top: var(--s-7); max-width: 40ch; font: 450 var(--step-2) / 1.35 var(--font-display); letter-spacing: -0.015em; }
+  .case__facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--s-5);
+    margin: var(--s-6) 0;
+  }
+  .case__facts dd { margin: var(--s-2) 0 0; }
+  .case__links { display: flex; flex-wrap: wrap; gap: var(--s-4); }
+  .case__links a { display: inline-flex; align-items: center; gap: 0.35em; font-weight: 560; text-decoration: none; }
+  .case__links :global(svg) { width: 1em; height: 1em; }
+  .case__body { max-width: var(--measure); margin-top: var(--s-7); }
+  .case__body :global(h2) { font-size: var(--step-2); margin: var(--s-7) 0 var(--s-4); }
+  .case__body :global(ul) { padding-left: 1.2rem; }
+  .case__body :global(li + li) { margin-top: var(--s-3); }
+  .case__body :global(p) { color: var(--ink-2); }
+  .case__next {
+    display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-4);
+    margin-top: var(--s-9); padding-top: var(--s-5); border-top: 1px solid var(--rule);
+  }
+  .case__next a {
+    display: inline-flex; align-items: center; gap: 0.4em;
+    font: 620 var(--step-2) / 1.1 var(--font-display); letter-spacing: -0.02em;
+    color: var(--ink); text-decoration: none;
+  }
+  .case__next :global(svg) { width: 0.8em; height: 0.8em; transition: transform 220ms var(--ease-out); }
+  @media (hover: hover) and (pointer: fine) { .case__next a:hover :global(svg) { transform: translateX(4px); } }
+</style>

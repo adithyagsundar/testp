@@ -1,0 +1,126 @@
+---
+import { getCollection } from 'astro:content';
+const roles = (await getCollection('experience')).sort((a, b) => a.data.order - b.data.order);
+---
+<section id="experience" class="block page" aria-labelledby="exp-h">
+  <h2 id="exp-h" class="block__h" data-split>Experience</h2>
+
+  <ol class="exp" data-timeline>
+    <span class="exp__line" aria-hidden="true"><span data-timeline-fill></span></span>
+    {roles.map((r) => (
+      <li class="exp__item" data-reveal>
+        <span class="exp__dot" aria-hidden="true"></span>
+        <div class="exp__row">
+          <div class="exp__main">
+            <h3>{r.data.org}</h3>
+            <p class="exp__role">{r.data.role} · {r.data.location}</p>
+          </div>
+          <p class="exp__period tabular meta">{r.data.period}</p>
+        </div>
+        <p class="exp__sum">{r.data.summary}</p>
+        <p class="exp__stack meta">{r.data.stack.join(' · ')}</p>
+        <button class="exp__toggle" type="button" aria-expanded="false" aria-controls={`exp-${r.id}`} data-disclose>
+          <span class="exp__toggle-label">Details</span>
+          <span class="exp__chev" aria-hidden="true"></span>
+        </button>
+        <div class="exp__more" id={`exp-${r.id}`} data-disclose-panel>
+          <div>
+            <ul>
+              {r.data.points.map((pt) => <li>{pt}</li>)}
+            </ul>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .exp { position: relative; list-style: none; padding-left: 2.25rem; }
+  .exp__line {
+    position: absolute;
+    left: 0.45rem;
+    top: 0.6rem;
+    bottom: 0.6rem;
+    width: 2px;
+    background: var(--rule);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .exp__line span {
+    display: block;
+    height: 100%;
+    background: var(--ink);
+    transform-origin: 50% 0;
+    transform: scaleY(var(--fill, 1));
+  }
+  .exp__item { position: relative; padding-bottom: var(--s-7); }
+  .exp__item:last-of-type { padding-bottom: 0; }
+  .exp__dot {
+    position: absolute;
+    left: calc(-2.25rem + 0.1rem);
+    top: 0.45rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    transition: transform 400ms var(--ease-out);
+  }
+  .exp__dot[data-reached] { transform: scale(1.08); }
+  /* The dot fills as the timeline reaches it */
+  .exp__dot::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border-radius: 50%;
+    background: var(--ink);
+    transform: scale(0);
+    transition: transform 600ms var(--ease-out);
+  }
+  .exp__dot[data-reached]::after { transform: scale(1); }
+  .exp__item:first-of-type .exp__dot::after { background: var(--hl); box-shadow: 0 0 0 1px var(--hl-ink); }
+  .exp__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--s-2) var(--s-5); }
+  .exp__role { color: var(--ink-2); margin-top: 0.2rem; }
+  .exp__period { white-space: nowrap; }
+  .exp__sum { margin-top: var(--s-3); max-width: var(--measure); }
+  .exp__stack { margin-top: var(--s-2); color: var(--ink-3); }
+
+  .exp__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: 44px;
+    margin-top: var(--s-2);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--link);
+    font: 560 var(--step--1) / 1 var(--font-body);
+    cursor: pointer;
+    transition: transform 140ms var(--ease-out);
+  }
+  .exp__toggle:active { transform: scale(0.97); }
+  .exp__chev {
+    width: 0.5rem; height: 0.5rem;
+    border-right: 1.75px solid currentColor;
+    border-bottom: 1.75px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 260ms var(--ease-out);
+  }
+  .exp__toggle[aria-expanded='true'] .exp__chev { transform: translateY(1px) rotate(225deg); }
+
+  .exp__more {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 320ms var(--ease-drawer), opacity 200ms ease;
+  }
+  .exp__more > div { overflow: hidden; }
+  .exp__toggle[aria-expanded='true'] + .exp__more { grid-template-rows: 1fr; opacity: 1; }
+  .exp__more ul { padding: var(--s-2) 0 0 1.1rem; max-width: var(--measure); color: var(--ink-2); }
+  .exp__more li + li { margin-top: var(--s-2); }
+  html:not(.js) .exp__more { grid-template-rows: 1fr; opacity: 1; }
+  html:not(.js) .exp__toggle { display: none; }
+  @media (prefers-reduced-motion: reduce) { .exp__more { transition: opacity 200ms ease; } }
+</style>

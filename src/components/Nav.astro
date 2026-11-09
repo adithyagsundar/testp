@@ -1,0 +1,162 @@
+---
+import Icon from './Icon.astro';
+import { site, sections } from '../data/site';
+interface Props { home?: boolean }
+const { home = false } = Astro.props;
+const base = home ? '' : '/';
+---
+<header class="nav" data-nav>
+  <div class="nav__inner page">
+    <a class="nav__brand" href="/" aria-label={`${site.name}, home`}>
+      <span class="nav__name">{site.name}</span>
+    </a>
+    <nav aria-label="Sections" class="nav__links" data-nav-links>
+      <span class="nav__pill" aria-hidden="true" data-nav-pill></span>
+      <ul>
+        {sections.map((s) => (
+          <li>
+            <a href={`${base}#${s.id}`} data-section-link={s.id}>
+              {s.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="nav__actions">
+      <button class="nav__theme" type="button" data-theme-toggle aria-label="Switch to dark theme">
+        <span class="nav__theme-icon nav__theme-icon--sun"><Icon name="sun" /></span>
+        <span class="nav__theme-icon nav__theme-icon--moon"><Icon name="moon" /></span>
+      </button>
+      <a class="btn btn--primary btn--sm" href={site.resume} data-magnetic>
+        Resume <Icon name="download" />
+      </a>
+    </div>
+  </div>
+  <div class="nav__progress" aria-hidden="true"><span data-progress></span></div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: transparent;
+    transition: background-color 240ms ease, backdrop-filter 240ms ease;
+  }
+  @media (prefers-reduced-motion: reduce) { .nav { transition: background-color 240ms ease; } }
+  /* Material arrives once content scrolls under it (apple-design: translucent chrome) */
+  .nav[data-scrolled] {
+    background: var(--nav-bg);
+    backdrop-filter: blur(18px) saturate(170%);
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+  }
+  /* Scroll-edge fade instead of a hard divider */
+  .nav::after {
+    content: '';
+    position: absolute;
+    inset: 100% 0 auto;
+    height: 18px;
+    background: linear-gradient(var(--nav-bg), transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 240ms ease;
+  }
+  .nav[data-scrolled]::after { opacity: 1; }
+
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+    min-height: 4.25rem;
+  }
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-3);
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    margin-right: auto;
+  }
+  .nav__links { position: relative; }
+  .nav__links ul { position: relative; display: flex; gap: var(--s-1); list-style: none; }
+  /* Spring-driven pill that slides between links (apple-design) */
+  .nav__pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 1px;
+    border-radius: 999px;
+    background: var(--scrim);
+    box-shadow: inset 0 0 0 1px var(--rule);
+    opacity: 0;
+    transform-origin: 0 50%;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+  }
+  .nav__pill[data-on] { opacity: 1; }
+  .nav__links a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    padding: 0.5em 0.75em;
+    border-radius: 999px;
+    color: var(--ink-2);
+    text-decoration: none;
+    font-weight: 520;
+    transition: color 160ms ease, background-color 160ms ease;
+  }
+  .nav__links a[aria-current='true'] { color: var(--ink); }
+  html:not(.js) .nav__links a[aria-current='true'] { background: var(--scrim); }
+  @media (hover: hover) and (pointer: fine) {
+    .nav__links a:hover { color: var(--ink); }
+  }
+  .nav__actions { display: flex; align-items: center; gap: var(--s-2); }
+  .nav__theme {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: transform 160ms var(--ease-out), color 160ms ease, background-color 160ms ease;
+  }
+  .nav__theme:active { transform: scale(0.94); }
+  @media (hover: hover) and (pointer: fine) {
+    .nav__theme:hover { color: var(--ink); background: var(--scrim); }
+  }
+  .nav__theme-icon {
+    grid-area: 1 / 1;
+    display: grid;
+    transition: transform 320ms var(--ease-out), opacity 200ms ease, filter 200ms ease;
+  }
+  .nav__theme-icon :global(svg) { width: 20px; height: 20px; }
+  :global([data-theme='light']) .nav__theme-icon--sun,
+  :global([data-theme='dark']) .nav__theme-icon--moon {
+    opacity: 0; transform: rotate(-60deg) scale(0.7); filter: blur(2px);
+  }
+  .btn--sm { min-height: 40px; font-size: var(--step--1); padding: 0.5em 0.95em; }
+
+  .nav__progress { position: absolute; inset: auto 0 0; height: 2px; overflow: hidden; }
+  .nav__progress span {
+    display: block;
+    height: 100%;
+    background: var(--hl);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+
+  @media (max-width: 880px) {
+    .nav__links { display: none; }
+  }
+  @media (max-width: 400px) {
+    .nav__name { font-size: var(--step--1); }
+  }
+</style>

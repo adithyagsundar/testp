@@ -1,0 +1,91 @@
+/* Design tokens: cool handout ground, ink, a highlighter for live state, cobalt for actions. */
+:root {
+  color-scheme: light dark;
+
+  /* Light: a cool printed handout, not cream paper */
+  --paper: #f5f6f8;
+  --paper-raised: #ffffff;
+  --ink: #111318;
+  --ink-2: #464c57;
+  --ink-3: #6a717d;
+  --rule: #d6dae1;
+  --rule-strong: #b9bfc9;
+  --hl: #ffe24a;              /* highlighter: live / hover state */
+  --hl-ink: #111318;          /* text that sits on the highlighter */
+  --link: #1f35e0;            /* cobalt: actions and links only */
+  --link-hover: #1528b8;
+  --on-link: #ffffff;
+  --focus: #1f35e0;
+  --scrim: rgb(17 19 24 / 0.04);
+  --nav-bg: rgb(245 246 248 / 0.72);
+  --shadow: 0 1px 2px rgb(17 19 24 / 0.06), 0 8px 24px -8px rgb(17 19 24 / 0.14);
+
+  /* Type */
+  --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-body: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+
+  --step--1: clamp(0.8rem, 0.78rem + 0.1vw, 0.86rem);
+  --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.08rem);
+  --step-1: clamp(1.2rem, 1.12rem + 0.4vw, 1.42rem);
+  --step-2: clamp(1.5rem, 1.32rem + 0.9vw, 2.05rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 3.1rem);
+
+  /* Space: one rhythm */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+  --s-9: 7rem;
+
+  --measure: 68ch;
+  --page: min(1180px, 100% - 2 * var(--gutter));
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-lg: 20px;
+
+  /* Motion (emil-design-eng curves; springs live in JS) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root[data-theme='dark'] {
+  --paper: #0e1116;
+  --paper-raised: #161a21;
+  --ink: #eceef2;
+  --ink-2: #a9b0bc;
+  --ink-3: #8a919e;
+  --rule: #252b35;
+  --rule-strong: #384050;
+  --hl: #ffe24a;
+  --hl-ink: #111318;
+  --link: #9aa8ff;
+  --link-hover: #c0c8ff;
+  --on-link: #0e1116;
+  --focus: #9aa8ff;
+  --scrim: rgb(255 255 255 / 0.03);
+  --nav-bg: rgb(14 17 22 / 0.7);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px -10px rgb(0 0 0 / 0.6);
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --ink-2: #2b3038;
+    --ink-3: #3c424c;
+    --rule: #8e95a1;
+    --nav-bg: var(--paper);
+  }
+  :root[data-theme='dark'] {
+    --ink-2: #d3d7de;
+    --ink-3: #c0c5ce;
+    --rule: #6b7382;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root { --nav-bg: var(--paper); }
+}

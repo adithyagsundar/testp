@@ -1,0 +1,38 @@
+---
+import { lexicon } from '../data/site';
+---
+<section id="skills" class="block page" aria-labelledby="sk-h">
+  <h2 id="sk-h" class="block__h" data-split>Skills</h2>
+  <dl class="lex">
+    {lexicon.map((row) => (
+      <div class="lex__row" data-reveal data-scroll>
+        <dt>{row.label}</dt>
+        <dd>
+          <ul>{row.items.map((it) => <li class="chip" data-drag>{it}</li>)}</ul>
+        </dd>
+      </div>
+    ))}
+  </dl>
+</section>
+<style>
+  .lex { margin: 0; display: grid; gap: var(--s-5); }
+  .lex__row { display: grid; grid-template-columns: 11rem 1fr; gap: var(--s-4); align-items: baseline; }
+  dt { color: var(--ink-3); font-size: var(--step--1); }
+  dd { margin: 0; }
+  dd ul { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; }
+  .chip {
+    padding: 0.3em 0.75em;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--paper);
+    font-weight: 520;
+    font-size: var(--step--1);
+    transition: border-color 200ms ease, box-shadow 300ms ease, background-color 200ms ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .chip { cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+    .chip:hover { border-color: var(--rule-strong); }
+    .chip[data-grabbed] { cursor: grabbing; border-color: var(--ink); box-shadow: var(--shadow); background: var(--paper-raised); position: relative; z-index: 5; }
+  }
+  @media (max-width: 640px) { .lex__row { grid-template-columns: 1fr; gap: var(--s-2); } }
+</style>
